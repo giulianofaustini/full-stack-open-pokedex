@@ -12,9 +12,7 @@ app.use(express.static("dist"));
 app.get('/version', (req, res) => {
   res.send('This is one with two') // change this string to ensure a new version deployed
 })
-app.get('/health', (req, res) => {
-  // eslint-disable-next-line no-constant-condition
-  if (true) throw('error...  ')
+app.get('/health', (req, res) => { 
   res.send('ok')
 })
 
