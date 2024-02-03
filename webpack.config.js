@@ -43,6 +43,7 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
+    allowedHosts: ['pokemon-rzr3.onrender.com'],
   },
   plugins: [
     new HtmlWebPackPlugin({
