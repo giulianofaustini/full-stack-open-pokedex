@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable quotes */
 /* eslint-disable no-undef */
-const { defineConfig } = require('cypress')
+const { defineConfig } = require("cypress")
 
 module.exports = defineConfig({
   e2e: {
-    // eslint-disable-next-line no-unused-vars
-    setupNodeEvents(on, config) {
+    setupNodeEvents(_on, _config) {
       // implement node event listeners here
     },
   },
