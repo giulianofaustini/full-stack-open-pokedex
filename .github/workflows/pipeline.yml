@@ -27,5 +27,8 @@ jobs:
           command: npm run cypress:open
           start: npm run start-prod
           wait-on: http://localhost:3000
-      - name: Trigger deployment
-        run: curl https://api.render.com/deploy/srv-${{secrets.RENDER_SERVICE_ID}}?key=${{secrets.RENDER_API_KEY}}
+      - name: Deploy to production  
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.MY_RENDER_API_KEY }}
