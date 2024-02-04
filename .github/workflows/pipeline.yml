@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-20.04
@@ -26,5 +29,9 @@ jobs:
           start: npm run start-prod
           wait-on: http://localhost:3000
       - name: Trigger deployment
+        if: ${{ github.event_name == 'push' }}
         run: curl -v https://api.render.com/deploy/srv-${{secrets.RENDER_SERVICE_ID}}?key=${{secrets.RENDER_API_KEY}}
+
+
+        # check if deployment is not triggered if the event is a pull request without the push.
  
