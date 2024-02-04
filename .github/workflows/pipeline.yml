@@ -1,4 +1,5 @@
 name: Deployment pipeline
+
 on:
   push:
     branches:
@@ -6,45 +7,71 @@ on:
   pull_request:
     branches: [main]
     types: [opened, synchronize]
+
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: Install dependencies 
         run: npm install  
+
       - name: Check style
         run: npm run eslint
+
       - name: Run build
         run: npm run build
-      - name: run tests
+
+      - name: Run tests
         run: npm test
-      - name: cypress tests
+
+      - name: Run Cypress tests
         uses: cypress-io/github-action@v5
         with:
           command: npm run cypress:open
           start: npm run start-prod
           wait-on: http://localhost:3000
+
       - name: Trigger deployment
         if: ${{ github.event_name == 'push' }}
-        run: curl -v https://api.render.com/deploy/srv-${{secrets.RENDER_SERVICE_ID}}?key=${{secrets.RENDER_API_KEY}}
+        run: curl -v https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+
   tag_release:
-          needs: [simple_deployment_pipeline]
-          runs-on: ubuntu-20.04
-          steps:
-            - uses: actions/checkout@v4
-            - name: Bump version and tags to check
-              if: ${{ github.event_name == 'push' }}
-              uses: anothrNick/github-tag-action@1.64.0
-            
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                DEFAULT_BUMP: patch
-                WITH_V: true
-                
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Get commits
+        env:
+          COMMITS: ${{ toJson(github.event.commits) }}
+        run: echo "$COMMITS"
+
+      - name: Get commit messages
+        env:
+          COMMIT_MESSAGES: ${{toJson(github.event.commits.*.message)}}
+        run: echo "$COMMIT_MESSAGES"
+
+      - name: Bump version and tags to check
+        if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
+        uses: anothrNick/github-tag-action@1.64.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+          WITH_V: true
 
 
         # check if deployment is not triggered if the event is a pull request without the push.
