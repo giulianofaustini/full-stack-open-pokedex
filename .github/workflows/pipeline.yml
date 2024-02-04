@@ -48,5 +48,5 @@ jobs:
 
         # check if deployment is not triggered if the event is a pull request without the push.
 
-        # check if the tag release is working fine.
+        # check if the tag release is working fine and the version is bumped with this update
  
