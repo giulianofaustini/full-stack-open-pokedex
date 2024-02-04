@@ -35,14 +35,19 @@ jobs:
           needs: [simple_deployment_pipeline]
           runs-on: ubuntu-20.04
           steps:
+            - uses: actions/checkout@v4
             - name: Bump version and tags to check
               if: ${{ github.event_name == 'push' }}
               uses: anothrNick/github-tag-action@1.64.0
-              #patch
+            
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                DEFAULT_BUMP: patch
+                WITH_V: true
                 
 
 
         # check if deployment is not triggered if the event is a pull request without the push.
+
+        # check if the tag release is working fine and the version is bumped with this update
  
