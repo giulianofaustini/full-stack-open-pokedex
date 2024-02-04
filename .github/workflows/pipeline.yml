@@ -40,7 +40,7 @@ jobs:
           wait-on: http://localhost:3000
 
       - name: Trigger deployment
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
         run: curl -v https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
   tag_release:
@@ -78,5 +78,5 @@ jobs:
 
         # check if the tag release is working fine and the version is bumped with this update
 
-        # check if skip works for the tag release
+        # check if skip works for the tag release with the push event now in deployment pipeline
  
