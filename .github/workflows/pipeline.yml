@@ -47,4 +47,6 @@ jobs:
 
 
         # check if deployment is not triggered if the event is a pull request without the push.
+
+        # check if the tag release is working fine.
  
